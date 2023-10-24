@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MoodRadar - Sentiment Analysis</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans p-8">
+    <nav class="bg-blue-500 p-4 text-white">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-xl font-semibold">Analysis</a>
+            <h1 href="/" class="text-xl font-bold">MoodRadar</h1>
+            <a href="/history" class="hover:underline">History</a>
+        </div>
+    </nav>
+    <h1 class="text-3xl text-center mt-8">Sentiment Analysis</h1>
+    <form action="/predict" method="post" class="max-w-md mx-auto bg-white rounded-lg p-6 shadow-md mt-8">
+        <label for="text" class="text-gray-700 text-sm font-bold">Enter Text:</label>
+        <textarea name="text" rows="4" cols="50" class="w-full border p-2 mb-4 rounded"></textarea>
+        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">Analyze</button>
+    </form>
+    {% if text %}
+        <div class="mt-6 max-w-md mx-auto bg-white rounded-lg p-6 shadow-md">
+            <h2 class="text-xl font-bold mb-2">Input Text:</h2>
+            <p class="text-gray-700">{{ text }}</p>
+            <h2 class="text-xl font-bold mt-4">Sentiment:</h2>
+            {% if sentiment == "Positive" %}
+                <p class="text-green-500 font-bold">{{ sentiment }}</p>
+            {% elif sentiment == "Negative" %}
+                <p class="text-red-500 font-bold">{{ sentiment }}</p>
+            {% else %}
+                <p class="text-gray-500 font-bold">{{ sentiment }}</p>
+            {% endif %}
+            <h2 class="text-xl font-bold mb-2">Explanation:</h2>
+            <p class="text-gray-700">{{ explanation }}</p>
+        </div>
+    {% endif %}
+</body>
+</html>
