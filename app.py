@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime
 
-from analysis import preprocess_text
-from util import load_models
-from database.database import db, insert_history, History
+from app.analysis import preprocess_text
+from app.util import load_models
+from app.database import db, insert_history, History
 
 app = Flask(__name__, )
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///history.db'
