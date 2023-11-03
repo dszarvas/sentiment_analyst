@@ -3,35 +3,88 @@
 <head>
     <title>MoodRadar - Sentiment History</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
 </head>
 <body class="bg-gray-100 font-sans p-8">
     <nav class="bg-blue-500 p-4 text-white">
         <div class="container mx-auto flex justify-between items-center">
             <a href="/" class="hover:underline">Analysis</a>
-            <h1 href="/" class="text-xl font-bold">MoodRadar</h1>
+            <a href="/" class="text-2xl font-bold">MoodRadar</a>
             <a href="/history" class="text-xl font-semibold">History</a>
         </div>
     </nav>
     <h1 class="text-3xl text-center mt-8">Sentiment History</h1>
+    <div class="container mx-auto mt-8 flex justify-between items-center">
+        <button id="clearButton" class="bg-red-400 text-white font-semibold py-2 px-4 rounded ml-auto">
+            Clear History
+        </button>
+        <!-- The modal dialog -->
+        <div id="confirmModal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center hidden">
+            <div class="bg-white p-6 rounded shadow-lg">
+                <p>Are you sure you want to clear the sentiment prediction history?</p>
+                <p>(This action is irreversible.)</p>
+                <div class="mt-4 text-right">
+                    <button id="confirmYes" class="bg-red-500 text-white px-4 py-2 rounded">Yes</button>
+                    <button id="confirmNo" class="bg-gray-500 text-white px-4 py-2 rounded ml-2">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container mx-auto mt-8">
-        <table class="min-w-full">
+        <table class="min-w-full border">
             <thead>
-                <tr>
-                    <th class="text-left">Date</th>
-                    <th class="text-left">Text</th>
-                    <th class="text-left">Sentiment</th>
+                <tr class="bg-blue-200">
+                    <th class="py-2 px-4 text-left">Date</th>
+                    <th class="py-2 px-4 text-left">Text</th>
+                    <th class="py-2 px-4 text-left">Sentiment</th>
                 </tr>
             </thead>
             <tbody>
                 {% for entry in history %}
-                <tr>
-                    <td>{{ entry.date }}</td>
-                    <td>{{ entry.text }}</td>
-                    <td>{{ entry.sentiment }}</td>
+                <tr class="border-t">
+                    <td class="py-2 px-4">{{ entry.date }}</td>
+                    <td class="py-2 px-4">{{ entry.text }}</td>
+                    {% if entry.sentiment == "Positive" %}
+                        <td class="py-2 px-4 text-green-500">{{ entry.sentiment }}</td>
+                    {% elif entry.sentiment == "Negative" %}
+                        <td class="py-2 px-4 text-red-500">{{ entry.sentiment }}</td>
+                    {% else %}
+                        <td class="py-2 px-4">{{ entry.sentiment }}</td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </body>
+<script>
+    const clearButton = document.getElementById('clearButton');
+    const confirmModal = document.getElementById('confirmModal');
+    const confirmYes = document.getElementById('confirmYes');
+    const confirmNo = document.getElementById('confirmNo');
+
+    clearButton.addEventListener('click', function() {
+        confirmModal.classList.remove('hidden');
+    });
+
+    confirmNo.addEventListener('click', function() {
+        confirmModal.classList.add('hidden');
+    });
+
+    confirmYes.addEventListener('click', function() {
+        fetch('/clear_database', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(response => {
+            if (response.ok) {
+                location.reload();  // Reload the page after clearing the database
+            } else {
+                console.error('Failed to clear the database.');
+            }
+        });
+        confirmModal.classList.add('hidden');
+    });
+</script>
 </html>

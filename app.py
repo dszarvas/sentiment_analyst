@@ -1,23 +1,15 @@
-from flask import Flask, render_template, request
-import pickle
+from flask import Flask, render_template, request, redirect, url_for
+from datetime import datetime
 
 from analysis import preprocess_text
-from explainer import explain_sentiment
+from util import load_models
+from database.database import db, insert_history, History
 
-app = Flask(__name__)
+app = Flask(__name__, )
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///history.db'
+db.init_app(app)
 
-history_data = [
-    {"date": "2023-01-01", "text": "Sample query 1", "sentiment": "Positive"},
-    {"date": "2023-01-02", "text": "Sample query 2", "sentiment": "Negative"},
-]
-
-# Load the pre-trained Logistic Regression model
-with open('models/logistic_regression/model.pkl', 'rb') as model_file:
-    model = pickle.load(model_file)
-
-# Load the TF-IDF vectorizer used during training
-with open('models/logistic_regression/tfidf_vectorizer.pkl', 'rb') as vectorizer_file:
-    tfidf_vectorizer = pickle.load(vectorizer_file)
+model, tfidf_vectorizer = load_models()
 
 @app.route('/')
 def home():
@@ -42,16 +34,23 @@ def predict():
     else:
         sentiment = 'Neutral'
 
-    # explanation = explain_sentiment(text, sentiment)
-    # return render_template('index.html', text=text, sentiment=sentiment, explanation=explanation)
+    insert_history(date=datetime.now().date(), text=text, sentiment=sentiment)
 
     return render_template('index.html', text=text, sentiment=sentiment)
 
-
 @app.route('/history')
 def sentiment_history():
+    history_data = History.query.all()
     return render_template('history.html', history=history_data)
 
+@app.route('/clear_database', methods=['POST'])
+def clear_database():
+    # Delete all records in the History table
+    History.query.delete()
+    db.session.commit()
+    return redirect(url_for('sentiment_history'))  # Redirect to the history page
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)

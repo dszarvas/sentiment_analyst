@@ -3,12 +3,13 @@
 <head>
     <title>MoodRadar - Sentiment Analysis</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
 </head>
 <body class="bg-gray-100 font-sans p-8">
     <nav class="bg-blue-500 p-4 text-white">
         <div class="container mx-auto flex justify-between items-center">
             <a href="/" class="text-xl font-semibold">Analysis</a>
-            <h1 href="/" class="text-xl font-bold">MoodRadar</h1>
+            <a href="/" class="text-2xl font-bold">MoodRadar</h1>
             <a href="/history" class="hover:underline">History</a>
         </div>
     </nav>
@@ -22,7 +23,7 @@
         <div class="mt-6 max-w-md mx-auto bg-white rounded-lg p-6 shadow-md">
             <h2 class="text-xl font-bold mb-2">Input Text:</h2>
             <p class="text-gray-700">{{ text }}</p>
-            <h2 class="text-xl font-bold mt-4">Sentiment:</h2>
+            <h2 class="text-xl font-bold mt-4 mb-2">Sentiment:</h2>
             {% if sentiment == "Positive" %}
                 <p class="text-green-500 font-bold">{{ sentiment }}</p>
             {% elif sentiment == "Negative" %}
@@ -30,8 +31,6 @@
             {% else %}
                 <p class="text-gray-500 font-bold">{{ sentiment }}</p>
             {% endif %}
-            <h2 class="text-xl font-bold mb-2">Explanation:</h2>
-            <p class="text-gray-700">{{ explanation }}</p>
         </div>
     {% endif %}
 </body>
