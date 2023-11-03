@@ -1,6 +1,6 @@
 # MoodRadar - A Sentiment Analysis Web Application
 
-<img src="static/logo.png" alt="drawing" width="200"/>
+<img src="static/app_logo.png" alt="drawing" width="200"/>
 
 **MoodRadar** is a web application that performs sentiment analysis on text input provided by the user. It analyzes the text and categorizes it into positive, negative, or neutral sentiment. Additionally, it provides a history of previous sentiment analysis results.
 
